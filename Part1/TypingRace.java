@@ -136,7 +136,7 @@ public class TypingRace {
 
         // Burnout check — pushing too hard increases burnout risk
         // (probability scales with accuracy squared, capped at ~0.05)
-        if (Math.random() < 0.05 * theTypist.getAccuracy() * theTypist.getAccuracy()) {
+        if (Math.random() < 0.02 * theTypist.getAccuracy() * theTypist.getAccuracy()) {
             theTypist.burnOut(BURNOUT_DURATION);
         }
     }
