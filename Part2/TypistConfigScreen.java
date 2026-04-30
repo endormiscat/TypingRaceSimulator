@@ -1,32 +1,32 @@
+
 import java.awt.*;
 import javax.swing.*;
 
-public class TypistConfigScreen extends JPanel
-{
-    private static final String[] STYLE_NAMES    = {"Touch Typist", "Hunt & Peck", "Phone Thumbs", "Voice-to-Text"};
+public class TypistConfigScreen extends JPanel {
+
+    private static final String[] STYLE_NAMES = {"Touch Typist", "Hunt & Peck", "Phone Thumbs", "Voice-to-Text"};
     private static final String[] KEYBOARD_NAMES = {"Mechanical", "Membrane", "Touchscreen", "Stenography"};
-    private static final String[] SYMBOLS        = {"①","②","③","④","⑤","⑥"};
+    private static final String[] SYMBOLS = {"①", "②", "③", "④", "⑤", "⑥"};
 
     private RaceGUI raceGUI;
     private int seatCount;
     private JTabbedPane tabs;
 
-    private JTextField[]  nameFields;
-    private JComboBox[]   styleDropdowns;
-    private JComboBox[]   keyboardDropdowns;
-    private JTextField[]  symbolFields;
+    private JTextField[] nameFields;
+    private JComboBox[] styleDropdowns;
+    private JComboBox[] keyboardDropdowns;
+    private JTextField[] symbolFields;
     private JCheckBox[][] accessoryBoxes;
 
-    public TypistConfigScreen(RaceGUI raceGUI, int seatCount)
-    {
-        this.raceGUI   = raceGUI;
+    public TypistConfigScreen(RaceGUI raceGUI, int seatCount) {
+        this.raceGUI = raceGUI;
         this.seatCount = seatCount;
 
-        nameFields        = new JTextField[seatCount];
-        styleDropdowns    = new JComboBox[seatCount];
+        nameFields = new JTextField[seatCount];
+        styleDropdowns = new JComboBox[seatCount];
         keyboardDropdowns = new JComboBox[seatCount];
-        symbolFields      = new JTextField[seatCount];
-        accessoryBoxes    = new JCheckBox[seatCount][3];
+        symbolFields = new JTextField[seatCount];
+        accessoryBoxes = new JCheckBox[seatCount][3];
 
         setLayout(new BorderLayout());
         setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
@@ -37,15 +37,15 @@ public class TypistConfigScreen extends JPanel
         add(title, BorderLayout.NORTH);
 
         tabs = new JTabbedPane();
-        for (int i = 0; i < seatCount; i++)
+        for (int i = 0; i < seatCount; i++) {
             tabs.addTab("Typist " + (i + 1), buildTab(i));
+        }
         add(tabs, BorderLayout.CENTER);
 
         add(buildButtons(), BorderLayout.SOUTH);
     }
 
-    private JPanel buildTab(int i)
-    {
+    private JPanel buildTab(int i) {
         JPanel panel = new JPanel(new GridLayout(5, 1, 5, 5));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -84,14 +84,15 @@ public class TypistConfigScreen extends JPanel
         accessoryBoxes[i][0] = new JCheckBox("Wrist Support (less burnout)");
         accessoryBoxes[i][1] = new JCheckBox("Energy Drink (accuracy boost then drop)");
         accessoryBoxes[i][2] = new JCheckBox("Headphones (less mistyping)");
-        for (JCheckBox box : accessoryBoxes[i]) accPanel.add(box);
+        for (JCheckBox box : accessoryBoxes[i]) {
+            accPanel.add(box);
+        }
         panel.add(accPanel);
 
         return panel;
     }
 
-    private JPanel buildButtons()
-    {
+    private JPanel buildButtons() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
         JButton back = new JButton("← Back");
@@ -109,24 +110,46 @@ public class TypistConfigScreen extends JPanel
         return panel;
     }
 
-    private Typist[] buildTypists()
-    {
+    private Typist[] buildTypists() {
         Typist[] typists = new Typist[seatCount];
-        for (int i = 0; i < seatCount; i++)
-        {
-            String name   = nameFields[i].getText().trim();
+        for (int i = 0; i < seatCount; i++) {
+            String name = nameFields[i].getText().trim();
             String symbol = symbolFields[i].getText().trim();
-            char   sym    = symbol.isEmpty() ? SYMBOLS[i].charAt(0) : symbol.charAt(0);
+            char sym = symbol.isEmpty() ? SYMBOLS[i].charAt(0) : symbol.charAt(0);
 
             double accuracy = 0.70;
             switch (styleDropdowns[i].getSelectedIndex()) {
-                case 0: accuracy += 0.15; break; // Touch Typist
-                case 1: accuracy -= 0.10; break; // Hunt & Peck
-                case 2: accuracy -= 0.05; break; // Phone Thumbs
-                case 3: accuracy -= 0.20; break; // Voice-to-Text
+                case 0:
+                    accuracy += 0.15;
+                    break; // Touch Typist
+                case 1:
+                    accuracy -= 0.10;
+                    break; // Hunt & Peck
+                case 2:
+                    accuracy -= 0.05;
+                    break; // Phone Thumbs
+                case 3:
+                    accuracy -= 0.20;
+                    break; // Voice-to-Text
             }
+
+            // Apply keyboard modifier
+            switch (keyboardDropdowns[i].getSelectedIndex()) {
+                case 0:
+                    accuracy += 0.05;
+                    break; // Mechanical
+                case 1:
+                    break; // Membrane — no change
+                case 2:
+                    accuracy -= 0.10;
+                    break; // Touchscreen
+                case 3:
+                    accuracy += 0.10;
+                    break; // Stenography
+            }
+
             accuracy = Math.min(1.0, Math.max(0.0, accuracy));
-            typists[i] = new Typist(sym, name.isEmpty() ? "TYPIST_" + (i+1) : name, accuracy);
+            typists[i] = new Typist(sym, name.isEmpty() ? "TYPIST_" + (i + 1) : name, accuracy);
         }
         return typists;
     }
