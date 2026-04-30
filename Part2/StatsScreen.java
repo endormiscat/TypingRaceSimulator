@@ -26,8 +26,9 @@ public class StatsScreen extends JPanel {
         double[] accuracies = new double[typists.length];
         for (int i = 0; i < typists.length; i++) {
             names[i] = typists[i].getName();
-            int total = typists[i].getProgress() + mistypes[i];
-            accuracies[i] = total == 0 ? 0 : (double) typists[i].getProgress() / total;
+            int progress = Math.min(typists[i].getProgress(), passage.length());
+            int total = progress + mistypes[i];
+            accuracies[i] = total == 0 ? 0 : (double) progress / total;
         }
         StatsManager.saveRace(names, wpms, accuracies, burnouts, finishOrder);
 
