@@ -154,6 +154,7 @@ public class Typist
         this.burntout = false;
         this.progress = 0;
         this.turnsBurntout = 0;
+        this.justMistyped = false;
     }
 
     /**
